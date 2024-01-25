@@ -49,8 +49,6 @@ float davidCantrell(float a, float b) {
 }
 
 // print a separator line of length SEPARATOR_LENGTH
-// I wonder if it would be better style to pass seperator length as a parameter here.
-// I feel like the constant should be what is passed.
 void printSeparator() {
     for (int i = 0; i < SEPARATOR_LENGTH; i++) {
         if (i == 0 || i == SEPARATOR_LENGTH - 1) {
@@ -86,7 +84,7 @@ void printResults(const float a, const float b, const CircumferenceFormula formu
 int main(void) {
     // declare an array of CircumferenceFormula structs, each containing a name and its associated function.
     // this approach lets us add new formulas without having to change the printResults function
-    // we do however have to increase MAX_FORMULAS because our array size is fixed.
+    // we do however have to increase MAX_FORMULAS first because our array size is fixed.
     CircumferenceFormula formulas[MAX_FORMULAS] = {
         {"Ramanujan's First Approximation", firstRamunajan},
         {"Ramanujan's Second Approximation", secondRamunajan},
