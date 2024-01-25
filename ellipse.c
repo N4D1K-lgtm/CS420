@@ -2,7 +2,6 @@
 #include <stdio.h>
 
 #define PI 3.14159
-#define MAX_FORMULAS 6
 #define MAX_NAME_LENGTH 50
 #define SEPARATOR_LENGTH 55
 
@@ -79,9 +78,8 @@ void printResults(const float a, const float b,
 int main(void) {
   // declare an array of CircumferenceFormula structs, each containing a name
   // and its associated function. this approach lets us add new formulas without
-  // having to change the printResults function we do however have to increase
-  // MAX_FORMULAS first because our array size is fixed.
-  CircumferenceFormula formulas[MAX_FORMULAS] = {
+  // having to change printResults
+  CircumferenceFormula formulas[] = {
       {"Ramanujan's First Approximation", firstRamunajan},
       {"Ramanujan's Second Approximation", secondRamunajan},
       {"Muir's Formula", muir},
@@ -89,11 +87,14 @@ int main(void) {
       {"Holder's Mean", holder},
       {"David Cantrell's Formula", davidCantrell}};
 
-  // grab our floats from stdin
+  // grab floats from stdin, assume they are valid
   float a, b;
   scanf("%f %f", &a, &b);
 
-  printResults(a, b, formulas, MAX_FORMULAS);
+  // number of elements in our formulas array
+  int formulaCount = sizeof(formulas) / sizeof(formulas[0]);
+
+  printResults(a, b, formulas, formulaCount);
 
   return 0;
 }
