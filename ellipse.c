@@ -1,49 +1,56 @@
 #include <math.h>
 #include <stdio.h>
-#include <string.h>
 
 #define PI 3.14159
 #define MAX_FORMULAS 6
 #define MAX_NAME_LENGTH 50
 #define SEPARATOR_LENGTH 55
 
+// type definition for a pointer to any function that takes two floats and 
+// returns a float. all of our formula implementations will match this signature
 typedef float (*CircumferenceFunc)(float, float);
 
+// a struct to hold the name of a formula and its associated function
+// we will use this to dynamically call each formula from an initialized struct array
 typedef struct {
     char name[MAX_NAME_LENGTH];
     CircumferenceFunc func;
 } CircumferenceFormula;
 
 
-float first_ramunajan(float a, float b) {
+// all our formula implementations
+float firstRamunajan(float a, float b) {
     return PI * (3 * (a + b) - sqrt((3 * a + b) * (a + b * 3)));
 }
 
-float second_ramunajan(float a, float b) {
-  float h = pow((a - b), 2) / pow((a + b), 2);
+float secondRamunajan(float a, float b) {
+  const float h = pow((a - b), 2) / pow((a + b), 2);
   return PI * (a + b) * ( 1 + 3 * h / (10 + pow((4 - 3 * h), .5)));
 }
 
 float muir(float a, float b) {
-  float s = 1.5;
+  const float s = 1.5;
   return 2 * PI * pow((pow(a, s) / 2 + pow(b, s) / 2), (1 / s));
 }
 
 float hudson(float a, float b) {
-  float h = pow((a - b), 2) / pow((a + b), 2);
+  const float h = pow((a - b), 2) / pow((a + b), 2);
   return 0.25 * PI * ((a + b) * (3 * (1 + h / 4) + 1 / (1 - h / 4)));
 }
 
 float holder(float a, float b) {
-  float s = log(2) / log(PI / 2);
+  const float s = log(2) / log(PI / 2);
   return 4 * pow(pow(a, s) + pow(b, s), (1 / s));
 }
 
-float david_cantrell(float a, float b) {
-  float s = 0.825056;
+float davidCantrell(float a, float b) {
+  const float s = 0.825056;
   return 4 * (a + b) - 2 * (4 - PI) * a * b / pow((pow(a, s) / 2 + pow(b, s) / 2), (1 / s));
 }
 
+// print a separator line of length SEPARATOR_LENGTH
+// I wonder if it would be better style to pass seperator length as a parameter here.
+// I feel like the constant should be what is passed.
 void printSeparator() {
     for (int i = 0; i < SEPARATOR_LENGTH; i++) {
         if (i == 0 || i == SEPARATOR_LENGTH - 1) {
@@ -57,13 +64,16 @@ void printSeparator() {
     printf("\n");
 }
 
+// grab a float from stdin
 float promptForFloat(const char *prompt) {
     float value;
+    // we are going to assume the user behaves
     printf("%s", prompt);
     scanf("%f", &value);
     return value;
 }
 
+// print results for each formula in the formulas array tabulated according to the desired output
 void printResults(const float a, const float b, const CircumferenceFormula formulas[], const int formulaCount) {
     printf("Ellipse Circumference for Major Axis: %6.2f and Minor Axis: %6.2f\n", a, b);
     printSeparator();
@@ -74,13 +84,16 @@ void printResults(const float a, const float b, const CircumferenceFormula formu
 }
 
 int main(void) {
+    // declare an array of CircumferenceFormula structs, each containing a name and its associated function.
+    // this approach lets us add new formulas without having to change the printResults function
+    // we do however have to increase MAX_FORMULAS because our array size is fixed.
     CircumferenceFormula formulas[MAX_FORMULAS] = {
-        {"Ramanujan's First Approximation", first_ramunajan},
-        {"Ramanujan's Second Approximation", second_ramunajan},
-        {"Muir's Approximation", muir},
-        {"Hudson's Approximation", hudson},
-        {"Holder's Approximation", holder},
-        {"David Cantrell's Approximation", david_cantrell}
+        {"Ramanujan's First Approximation", firstRamunajan},
+        {"Ramanujan's Second Approximation", secondRamunajan},
+        {"Muir's Formula", muir},
+        {"Hudson's Formula", hudson},
+        {"Holder's Mean", holder},
+        {"David Cantrell's Formula", davidCantrell}
     };
 
     float a = promptForFloat("Enter a value for the Major Axis (a): ");
