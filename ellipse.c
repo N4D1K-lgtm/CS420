@@ -6,26 +6,26 @@
 #define MAX_NAME_LENGTH 50
 #define SEPARATOR_LENGTH 55
 
-// type definition for a pointer to any function that takes two floats and 
+// type definition for a pointer to any function that takes two floats and
 // returns a float. all of our formula implementations will match this signature
 typedef float (*CircumferenceFunc)(float, float);
 
 // a struct to hold the name of a formula and its associated function
-// we will use this to dynamically call each formula from an initialized struct array
+// we will use this to dynamically call each formula from an initialized struct
+// array
 typedef struct {
-    char name[MAX_NAME_LENGTH];
-    CircumferenceFunc func;
+  char name[MAX_NAME_LENGTH];
+  CircumferenceFunc func;
 } CircumferenceFormula;
-
 
 // all our formula implementations
 float firstRamunajan(float a, float b) {
-    return PI * (3 * (a + b) - sqrt((3 * a + b) * (a + b * 3)));
+  return PI * (3 * (a + b) - sqrt((3 * a + b) * (a + b * 3)));
 }
 
 float secondRamunajan(float a, float b) {
   const float h = pow((a - b), 2) / pow((a + b), 2);
-  return PI * (a + b) * ( 1 + 3 * h / (10 + pow((4 - 3 * h), .5)));
+  return PI * (a + b) * (1 + 3 * h / (10 + pow((4 - 3 * h), .5)));
 }
 
 float muir(float a, float b) {
@@ -45,59 +45,55 @@ float holder(float a, float b) {
 
 float davidCantrell(float a, float b) {
   const float s = 0.825056;
-  return 4 * (a + b) - 2 * (4 - PI) * a * b / pow((pow(a, s) / 2 + pow(b, s) / 2), (1 / s));
+  return 4 * (a + b) -
+         2 * (4 - PI) * a * b / pow((pow(a, s) / 2 + pow(b, s) / 2), (1 / s));
 }
 
 // print a separator line of length SEPARATOR_LENGTH
 void printSeparator() {
-    for (int i = 0; i < SEPARATOR_LENGTH; i++) {
-        if (i == 0 || i == SEPARATOR_LENGTH - 1) {
-            printf("+");
+  for (int i = 0; i < SEPARATOR_LENGTH; i++) {
+    if (i == 0 || i == SEPARATOR_LENGTH - 1) {
+      printf("+");
 
-        }
-        else {
-            printf("-");
-        }
+    } else {
+      printf("-");
     }
-    printf("\n");
+  }
+  printf("\n");
 }
 
-// grab a float from stdin
-float promptForFloat(const char *prompt) {
-    float value;
-    // we are going to assume the user behaves
-    printf("%s", prompt);
-    scanf("%f", &value);
-    return value;
-}
-
-// print results for each formula in the formulas array tabulated according to the desired output
-void printResults(const float a, const float b, const CircumferenceFormula formulas[], const int formulaCount) {
-    printf("Ellipse Circumference for Major Axis: %6.2f and Minor Axis: %6.2f\n", a, b);
+// print results for each formula in the formulas array tabulated according to
+// the desired output
+void printResults(const float a, const float b,
+                  const CircumferenceFormula formulas[],
+                  const int formulaCount) {
+  printf("Ellipse Circumference for Major Axis: %6.2f and Minor Axis: %6.2f\n",
+         a, b);
+  printSeparator();
+  for (int i = 0; i < formulaCount; i++) {
+    printf("|%36s |%15.6f|\n", formulas[i].name, formulas[i].func(a, b));
     printSeparator();
-    for (int i = 0; i < formulaCount; i++) {
-        printf("|%36s |%15.6f|\n", formulas[i].name, formulas[i].func(a, b));
-        printSeparator();
-    }
+  }
 }
 
 int main(void) {
-    // declare an array of CircumferenceFormula structs, each containing a name and its associated function.
-    // this approach lets us add new formulas without having to change the printResults function
-    // we do however have to increase MAX_FORMULAS first because our array size is fixed.
-    CircumferenceFormula formulas[MAX_FORMULAS] = {
-        {"Ramanujan's First Approximation", firstRamunajan},
-        {"Ramanujan's Second Approximation", secondRamunajan},
-        {"Muir's Formula", muir},
-        {"Hudson's Formula", hudson},
-        {"Holder's Mean", holder},
-        {"David Cantrell's Formula", davidCantrell}
-    };
+  // declare an array of CircumferenceFormula structs, each containing a name
+  // and its associated function. this approach lets us add new formulas without
+  // having to change the printResults function we do however have to increase
+  // MAX_FORMULAS first because our array size is fixed.
+  CircumferenceFormula formulas[MAX_FORMULAS] = {
+      {"Ramanujan's First Approximation", firstRamunajan},
+      {"Ramanujan's Second Approximation", secondRamunajan},
+      {"Muir's Formula", muir},
+      {"Hudson's Formula", hudson},
+      {"Holder's Mean", holder},
+      {"David Cantrell's Formula", davidCantrell}};
 
-    float a = promptForFloat("Enter a value for the Major Axis (a): ");
-    float b = promptForFloat("Enter a value for the Minor Axis (b): ");
+  // grab our floats from stdin
+  float a, b;
+  scanf("%f %f", &a, &b);
 
-    printResults(a, b, formulas, MAX_FORMULAS);
+  printResults(a, b, formulas, MAX_FORMULAS);
 
-    return 0;
+  return 0;
 }
